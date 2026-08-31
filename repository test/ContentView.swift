@@ -81,7 +81,14 @@ struct ContentView: View {
             } else if operation == "*" {
                 display = "\(number * second)"
             }
+            //funny troll part hahhahahhaahahh
+                        let rounded = ((result + 9) / 10) * 10
 
+                        display = "\(messages[messageIndex]) \(rounded)"
+                        messageIndex = (messageIndex + 1) % messages.count
+
+                        equation = display
+                        newInput = true
             equation = display
             newInput = true
         }
