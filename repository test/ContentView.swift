@@ -14,10 +14,10 @@ struct ContentView: View {
     @State private var newInput = true
 
     let buttons = [
-        ["7", "8", "9", "+"],
-        ["4", "5", "6", "-"],
-        ["1", "2", "3", "="],
-        ["0"]
+        ["7", "8", "9", "x"],
+        ["4", "5", "6", "+"],
+        ["1", "2", "3", "-"],
+        ["", "0", "="]
     ]
 
     var body: some View {
