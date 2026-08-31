@@ -11,18 +11,20 @@ struct ContentView: View {
     @State private var display = "0"
     @State private var number = 0
     @State private var operation = ""
+    @State private var equation = ""
     @State private var newInput = true
 
     let buttons = [
-        ["7", "8", "9", "x"],
+        ["7", "8", "9", "*"],
         ["4", "5", "6", "+"],
         ["1", "2", "3", "-"],
-        ["AC", "0", "="]
+        ["", "0", "", "="],
+        ["", "", "", "AC"]
     ]
 
     var body: some View {
         VStack {
-            Text(display)
+            Text(equation.isEmpty ? display : equation)
                 .font(.largeTitle)
                 .frame(maxWidth: .infinity, alignment: .trailing)
 
@@ -42,6 +44,15 @@ struct ContentView: View {
     }
 
     func press(_ button: String) {
+        if button == "AC" {
+            display = "0"
+            number = 0
+            operation = ""
+            equation = ""
+            newInput = true
+            return
+        }
+
         if Int(button) != nil {
             if newInput {
                 display = button
@@ -49,12 +60,15 @@ struct ContentView: View {
             } else {
                 display += button
             }
+
+            equation += button
         }
 
-        else if button == "+" || button == "-" {
+        else if button == "+" || button == "-" || button == "*" {
             number = Int(display) ?? 0
             operation = button
             newInput = true
+            equation += " \(button) "
         }
 
         else if button == "=" {
@@ -64,8 +78,11 @@ struct ContentView: View {
                 display = "\(number + second)"
             } else if operation == "-" {
                 display = "\(number - second)"
+            } else if operation == "*" {
+                display = "\(number * second)"
             }
 
+            equation = display
             newInput = true
         }
     }
