@@ -4,23 +4,38 @@
 //
 //  Created by Eleos Gosal on 31/8/26.
 //
-
+//special text is t&c btw too lazy to change the name
 import SwiftUI
+//t&c
+struct NewView: View {
+    @Binding var specialtext: String
+    var body: some View {
+        VStack {
+            Text("T&C")
+                .font(.largeTitle)
+            Text("By using KALC!, you agree to the following terms and conditions.")
+            Text(specialtext)
+        }
+        .navigationTitle("t&c")
+    }
+}
 //ui
 struct ContentView: View {
 
-    @State private var display = "0"
-    @State private var number = 0
-    @State private var message = 0
-    @State private var operation = ""
-    @State private var equation = ""
-    @State private var newInput = true
+    @State var display = "0"
+    @State var number = 0
+    @State var message = 0
+    @State var operation = ""
+    @State var equation = ""
+    @State var newInput = true
+    @State var specialtext = "1. Don't crash out"
 
     let buttons = [
-        ["7", "8", "9", "*"],
-        ["4", "5", "6", "+"],
-        ["1", "2", "3", "-"],
-        ["AC", "0", "", "="]
+        ["4", "3", "7", "1"],
+        ["5", "=", "2", "9"],
+        ["8", "6", "0", "+"],
+        ["AC", "-", "*", "???"],
+        ["show gratitute"]
     ]
 
     let trollmessages = [
@@ -33,41 +48,54 @@ struct ContentView: View {
     ]
 
     var body: some View {
-        VStack {
-            Image("KALC!")
-                .resizable()
-                .scaledToFit()
-                .frame(width: 200, height: 200)
-                .offset(y: -100)
+        NavigationStack {
+            VStack {
+                Image("KALC!")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 225, height: 225)
+                    .offset(y: -100)
 
-            Text(equation.isEmpty ? display : equation)
-                .font(.largeTitle)
-                .frame(maxWidth: .infinity, alignment: .trailing)
-                .padding()
+                Text(equation.isEmpty ? display : equation)
+                    .font(.largeTitle)
+                    .frame(maxWidth: .infinity, alignment: .trailing)
+                    .padding()
                     .background(
                         RoundedRectangle(cornerRadius: 10)
-                            .fill(Color.gray.opacity(0.1)))
-            ForEach(buttons, id: \.self) { row in
-                HStack {
-                    ForEach(row, id: \.self) { button in
-                        Button(button) {
-                            press(button)
+                            .fill(Color.gray.opacity(0.1))
+                    )
+
+                ForEach(buttons, id: \.self) { row in
+                    HStack {
+                        ForEach(row, id: \.self) { button in
+                            Button(button) {
+                                press(button)
+                            }
+                            .font(.title)
+                            .frame(maxWidth: .infinity, minHeight: 60)
+                            .background(
+                                RoundedRectangle(cornerRadius: 20)
+                                    .fill(Color.gray.opacity(0.2))
+                            )
                         }
-                        .font(.title)
-                        .frame(maxWidth: .infinity, minHeight: 60)
-                        .background(
-                            RoundedRectangle(cornerRadius: 20)
-                                .fill(Color.gray.opacity(0.2))
-                        )
                     }
                 }
             }
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    NavigationLink {
+                        NewView(specialtext: $specialtext)
+                    } label: {
+                        Image(systemName: "questionmark.circle")
+                    }
+                }
+            }
+            .padding()
         }
-        .padding()
     }
 //button logics
     func press(_ button: String) {
-
+        
         if button == "AC" {
             display = "0"
             number = 0
@@ -76,33 +104,33 @@ struct ContentView: View {
             newInput = true
             return
         }
-
+        
         if Int(button) != nil {
-
+            
             if newInput {
                 display = button
                 newInput = false
             } else {
                 display += button
             }
-
+            
             equation += button
         }
-
+        
         else if button == "+" || button == "-" || button == "*" {
-
+            
             number = Int(display) ?? 0
             operation = button
             newInput = true
             equation += " \(button) "
         }
-
+        
         else if button == "=" {
-
+            
             let second = Int(display) ?? 0
-
+            
             var result = 0
-
+            
             if operation == "+" {
                 result = number + second
             }
@@ -112,12 +140,11 @@ struct ContentView: View {
             else if operation == "*" {
                 result = number * second
             }
-
             //approximation thing
             let numbersize = abs(result)
-
+            
             let rounded: Int
-
+            
             if numbersize < 100 {
                 rounded = Int((Double(result) / 10).rounded()) * 10
             } else if numbersize < 1000 {
@@ -129,22 +156,24 @@ struct ContentView: View {
             }
             //lieslieslies
             var answer = rounded
-
             if Int.random(in: 1...5) == 1 {
                 answer = Int.random(in: 1...99999)
             }
-
+            
             display = "\(trollmessages[message]) \(answer)"
             equation = display
-
-            //trollmessage part
+            //final ans
             message = (message + 1) % trollmessages.count
-
             newInput = true
+        }
+        else if button == "show gratitute" {
+            display = "thanks:D"
+        }
+        else if button == "???" {
+            specialtext = "2. crash out."
         }
     }
 }
-
 #Preview {
     ContentView()
 }
