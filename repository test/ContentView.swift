@@ -35,7 +35,7 @@ struct ContentView: View {
         ["5", "=", "2", "9"],
         ["8", "6", "0", "+"],
         ["AC", "-", "*", "???"],
-        ["show gratitute"]
+        [""]
     ]
 
     let trollmessages = [
@@ -165,9 +165,6 @@ struct ContentView: View {
             //final ans
             message = (message + 1) % trollmessages.count
             newInput = true
-        }
-        else if button == "show gratitute" {
-            display = "thanks:D"
         }
         else if button == "???" {
             specialtext = "2. crash out."
