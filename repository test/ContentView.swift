@@ -29,13 +29,14 @@ struct ContentView: View {
     @State var equation = ""
     @State var newInput = true
     @State var specialtext = "1. Don't crash out"
+    @State var currentNumber = 0
+    @State var powerswitch = true
 
     let buttons = [
         ["4", "3", "7", "1"],
         ["5", "=", "2", "9"],
         ["8", "6", "0", "+"],
-        ["AC", "-", "*", "???"],
-        [""]
+        ["AC", "-", "*", "???"]
     ]
 
     let trollmessages = [
@@ -56,7 +57,7 @@ struct ContentView: View {
                     .frame(width: 225, height: 225)
                     .offset(y: -100)
 
-                Text(equation.isEmpty ? display : equation)
+                Text(equation + display)
                     .font(.largeTitle)
                     .frame(maxWidth: .infinity, alignment: .trailing)
                     .padding()
@@ -80,6 +81,26 @@ struct ContentView: View {
                         }
                     }
                 }
+                Stepper(
+                    "Number: \(currentNumber)",
+                    value: $currentNumber,
+                    in: 0...99999)
+                .disabled(!powerswitch)
+                .onChange(of: currentNumber) {
+                    display = "\(currentNumber)"
+                }
+                Toggle("useless powerswitch", isOn: $powerswitch)
+                    .padding(.horizontal)
+                        .onChange(of: powerswitch) {
+                            if !powerswitch {
+                                display = "0"
+                                number = 0
+                                currentNumber = 0
+                                operation = ""
+                                equation = ""
+                                newInput = true
+                            }
+                        }
             }
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
@@ -95,39 +116,50 @@ struct ContentView: View {
     }
 //button logics
     func press(_ button: String) {
-        
+//powerswitch
+            if !powerswitch {
+                return
+            }
         if button == "AC" {
             display = "0"
+            currentNumber = 0
             number = 0
             operation = ""
             equation = ""
             newInput = true
             return
         }
-        
         if Int(button) != nil {
-            
+
             if newInput {
                 display = button
                 newInput = false
             } else {
                 display += button
             }
-            
-            equation += button
+            currentNumber = Int(display) ?? 0
         }
         
         else if button == "+" || button == "-" || button == "*" {
             
-            number = Int(display) ?? 0
-            operation = button
-            newInput = true
-            equation += " \(button) "
+            if !operation.isEmpty {
+                display = "too lazy to calculate"
+                equation = ""
+                    return
+                }
+
+                number = currentNumber
+                operation = button
+                equation = "\(number) \(button) "
+
+                currentNumber = 0
+                display = "0"
+                newInput = true
         }
         
         else if button == "=" {
             
-            let second = Int(display) ?? 0
+            let second = currentNumber
             
             var result = 0
             
@@ -161,13 +193,13 @@ struct ContentView: View {
             }
             
             display = "\(trollmessages[message]) \(answer)"
-            equation = display
+            equation = ""
             //final ans
             message = (message + 1) % trollmessages.count
             newInput = true
         }
         else if button == "???" {
-            specialtext = "2. crash out."
+            specialtext = "cool easter egg yay"
         }
     }
 }
