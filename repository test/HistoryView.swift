@@ -1,4 +1,9 @@
-```swift
+//
+//  HistoryView.swift
+//  repository test
+//
+//  Created by Eleos Gosal on 8/9/26.
+//
 import SwiftUI
 
 struct HistoryView: View {
@@ -8,7 +13,7 @@ struct HistoryView: View {
     var body: some View {
         List {
             if history.isEmpty {
-                Text("No answers saved yet.")
+                Text("The beginning of time...")
                     .foregroundStyle(.secondary)
             } else {
                 ForEach(history.reversed(), id: \.self) { answer in
@@ -16,7 +21,7 @@ struct HistoryView: View {
                 }
             }
         }
-        .navigationTitle("History")
+        .navigationTitle("Answer history")
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 Button("Clear") {
@@ -26,4 +31,3 @@ struct HistoryView: View {
         }
     }
 }
-```

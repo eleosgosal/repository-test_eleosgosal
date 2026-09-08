@@ -6,19 +6,6 @@
 //
 //special text is t&c btw too lazy to change the name
 import SwiftUI
-//t&c
-struct NewView: View {
-    @Binding var specialtext: String
-    var body: some View {
-        VStack {
-            Text("T&C")
-                .font(.largeTitle)
-            Text("By using KALC!, you agree to the following terms and conditions.")
-            Text(specialtext)
-        }
-        .navigationTitle("t&c")
-    }
-}
 //ui
 struct ContentView: View {
 
@@ -28,9 +15,9 @@ struct ContentView: View {
     @State var operation = ""
     @State var equation = ""
     @State var newInput = true
-    @State var specialtext = "1. Don't crash out"
     @State var currentNumber = 0
     @State var powerswitch = true
+    @State var history: [String] = []
 
     let buttons = [
         ["4", "3", "7", "1"],
@@ -65,7 +52,14 @@ struct ContentView: View {
                         RoundedRectangle(cornerRadius: 10)
                             .fill(Color.gray.opacity(0.1))
                     )
-
+                    .contextMenu {
+                        Button {
+                            history.append(display)
+                        }
+                        label: {
+                            Label("Add to History", systemImage: "clock.arrow.circlepath")
+                        }
+                    }
                 ForEach(buttons, id: \.self) { row in
                     HStack {
                         ForEach(row, id: \.self) { button in
@@ -105,9 +99,9 @@ struct ContentView: View {
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     NavigationLink {
-                        NewView(specialtext: $specialtext)
+                        HistoryView(history: $history)
                     } label: {
-                        Image(systemName: "questionmark.circle")
+                        Image(systemName: "clock.arrow.2.circlepath")
                     }
                 }
             }
@@ -197,9 +191,6 @@ struct ContentView: View {
             //final ans
             message = (message + 1) % trollmessages.count
             newInput = true
-        }
-        else if button == "???" {
-            specialtext = "cool easter egg yay"
         }
     }
 }
