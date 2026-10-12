@@ -123,6 +123,15 @@ struct ContentView: View {
             newInput = true
             return
         }
+        if button == "???" {
+            let randomInt = Int.random(in: 1...9999)
+            let randomIntstring = String(randomInt)
+            display = randomIntstring
+            number = randomInt
+            currentNumber = randomInt
+            newInput = true
+            return
+        }
         if Int(button) != nil {
 
             if newInput {
